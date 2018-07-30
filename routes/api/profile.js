@@ -22,7 +22,7 @@ const User = require("../../models/User");
 
 router.get("/test", (req, res) => res.json({ msg: "profile works" }));
 
-// @route GET - api/profiles
+// @route GET - api/profile
 // @desc - get user profile
 // @access - Private
 
@@ -270,7 +270,7 @@ router.delete(
 );
 
 // @route DELETE - api/profile/education/:edu_id
-// @desc - Delete experience from profile
+// @desc - Delete education from profile
 // @access - Private
 
 router.delete(

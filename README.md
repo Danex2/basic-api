@@ -32,5 +32,9 @@ Public Routes
 ``GET: api/users/register`` - Register a new user  
 ``GET: api/users/login`` - Login as a registered user  
 
-Protected
+Protected  
 ``GET: api/users/current`` - Get the current logged in user  
+
+### How to run
+Inside of the root folder and the client folder run ``yarn`` or ``npm install``  
+Then inside of the root folder run ``yarn run dev`` or ``npm run dev``  

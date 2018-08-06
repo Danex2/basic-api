@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter, Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import TextFieldGroup from "../common/textFieldGroup";
 import TextAreaFieldGroup from "../common/TextAreaFieldGroup";
@@ -13,6 +13,7 @@ class CreateProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      displaySocialInputs: false,
       handle: "",
       company: "",
       website: "",
@@ -28,6 +29,9 @@ class CreateProfile extends Component {
       instagram: "",
       errors: {}
     };
+
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -42,10 +46,10 @@ class CreateProfile extends Component {
     if (nextProps.profile.profile) {
       const profile = nextProps.profile.profile;
 
-      // bring skills array back to csv
+      // Bring skills array back to CSV
       const skillsCSV = profile.skills.join(",");
 
-      // if profile field doesnt exist, make it an empty string
+      // If profile field doesnt exist, make empty string
       profile.company = !isEmpty(profile.company) ? profile.company : "";
       profile.website = !isEmpty(profile.website) ? profile.website : "";
       profile.location = !isEmpty(profile.location) ? profile.location : "";
@@ -54,19 +58,19 @@ class CreateProfile extends Component {
         : "";
       profile.bio = !isEmpty(profile.bio) ? profile.bio : "";
       profile.social = !isEmpty(profile.social) ? profile.social : {};
-      profile.social.twitter = !isEmpty(profile.social.twitter)
+      profile.twitter = !isEmpty(profile.social.twitter)
         ? profile.social.twitter
         : "";
-      profile.social.facebook = !isEmpty(profile.social.facebook)
+      profile.facebook = !isEmpty(profile.social.facebook)
         ? profile.social.facebook
         : "";
-      profile.social.linkedin = !isEmpty(profile.social.linkedin)
+      profile.linkedin = !isEmpty(profile.social.linkedin)
         ? profile.social.linkedin
         : "";
-      profile.social.youtube = !isEmpty(profile.social.youtube)
+      profile.youtube = !isEmpty(profile.social.youtube)
         ? profile.social.youtube
         : "";
-      profile.social.instagram = !isEmpty(profile.social.instagram)
+      profile.instagram = !isEmpty(profile.social.instagram)
         ? profile.social.instagram
         : "";
 
@@ -77,7 +81,7 @@ class CreateProfile extends Component {
         website: profile.website,
         location: profile.location,
         status: profile.status,
-        skills: profile.skills,
+        skills: skillsCSV,
         githubusername: profile.githubusername,
         bio: profile.bio,
         twitter: profile.twitter,
@@ -89,8 +93,9 @@ class CreateProfile extends Component {
     }
   }
 
-  onSubmit = e => {
+  onSubmit(e) {
     e.preventDefault();
+
     const profileData = {
       handle: this.state.handle,
       company: this.state.company,
@@ -108,16 +113,17 @@ class CreateProfile extends Component {
     };
 
     this.props.createProfile(profileData, this.props.history);
-  };
+  }
 
-  onChange = e => {
+  onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
-  };
+  }
 
   render() {
     const { errors, displaySocialInputs } = this.state;
 
     let socialInputs;
+
     if (displaySocialInputs) {
       socialInputs = (
         <div>
@@ -129,32 +135,36 @@ class CreateProfile extends Component {
             onChange={this.onChange}
             error={errors.twitter}
           />
+
           <InputGroup
-            placeholder="Facebook Profile URL"
+            placeholder="Facebook Page URL"
             name="facebook"
             icon="fab fa-facebook"
             value={this.state.facebook}
             onChange={this.onChange}
             error={errors.facebook}
           />
+
           <InputGroup
-            placeholder="LinkedIn Profile URL"
+            placeholder="Linkedin Profile URL"
             name="linkedin"
             icon="fab fa-linkedin"
             value={this.state.linkedin}
             onChange={this.onChange}
             error={errors.linkedin}
           />
+
           <InputGroup
-            placeholder="Youtube Profile URL"
+            placeholder="YouTube Channel URL"
             name="youtube"
             icon="fab fa-youtube"
             value={this.state.youtube}
             onChange={this.onChange}
             error={errors.youtube}
           />
+
           <InputGroup
-            placeholder="Instagram Profile URL"
+            placeholder="Instagram Page URL"
             name="instagram"
             icon="fab fa-instagram"
             value={this.state.instagram}
@@ -177,13 +187,14 @@ class CreateProfile extends Component {
       { label: "Intern", value: "Intern" },
       { label: "Other", value: "Other" }
     ];
+
     return (
       <div className="create-profile">
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
               <Link to="/dashboard" className="btn btn-light">
-                Go back
+                Go Back
               </Link>
               <h1 className="display-4 text-center">Edit Profile</h1>
               <small className="d-block pb-3">* = required fields</small>
@@ -194,7 +205,7 @@ class CreateProfile extends Component {
                   value={this.state.handle}
                   onChange={this.onChange}
                   error={errors.handle}
-                  info="A unique handle for your profile URL. Your full name, company name, nickname, etc"
+                  info="A unique handle for your profile URL. Your full name, company name, nickname"
                 />
                 <SelectListGroup
                   placeholder="Status"
@@ -211,7 +222,7 @@ class CreateProfile extends Component {
                   value={this.state.company}
                   onChange={this.onChange}
                   error={errors.company}
-                  info="Could be your own company or places that you've worked at"
+                  info="Could be your own company or one you work for"
                 />
                 <TextFieldGroup
                   placeholder="Website"
@@ -219,7 +230,7 @@ class CreateProfile extends Component {
                   value={this.state.website}
                   onChange={this.onChange}
                   error={errors.website}
-                  info="Could be your own or companies one"
+                  info="Could be your own website or a company one"
                 />
                 <TextFieldGroup
                   placeholder="Location"
@@ -227,7 +238,7 @@ class CreateProfile extends Component {
                   value={this.state.location}
                   onChange={this.onChange}
                   error={errors.location}
-                  info="City or city & state suggested"
+                  info="City or city & state suggested (eg. Boston, MA)"
                 />
                 <TextFieldGroup
                   placeholder="* Skills"
@@ -235,15 +246,16 @@ class CreateProfile extends Component {
                   value={this.state.skills}
                   onChange={this.onChange}
                   error={errors.skills}
-                  info="Please use comma separated values (eg. HTML,CSS,JavaScript)"
+                  info="Please use comma separated values (eg.
+                    HTML,CSS,JavaScript,PHP"
                 />
                 <TextFieldGroup
-                  placeholder="* Github Username"
+                  placeholder="Github Username"
                   name="githubusername"
                   value={this.state.githubusername}
                   onChange={this.onChange}
                   error={errors.githubusername}
-                  info="If you want your latest repos linked, add your github username"
+                  info="If you want your latest repos and a Github link, include your username"
                 />
                 <TextAreaFieldGroup
                   placeholder="Short Bio"
@@ -253,6 +265,7 @@ class CreateProfile extends Component {
                   error={errors.bio}
                   info="Tell us a little about yourself"
                 />
+
                 <div className="mb-3">
                   <button
                     type="button"
@@ -283,10 +296,10 @@ class CreateProfile extends Component {
 }
 
 CreateProfile.propTypes = {
-  profile: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired,
   createProfile: PropTypes.func.isRequired,
-  getCurrentProfile: PropTypes.func.isRequired
+  getCurrentProfile: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
